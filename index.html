@@ -1,44 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- ... (keep previous head content) ... -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MultiView Pro - Independent Video Stations</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* Add this new animation */
-        @keyframes clickScale {
-            0% { transform: scale(1); }
-            50% { transform: scale(0.95); }
-            100% { transform: scale(1); }
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --accent: #FF0000;
+            --text: #ffffff;
+            --danger: #e94b4b;
+            --header-bg: #000000;
         }
 
-        /* Updated remove button styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 60px;
+        }
+
+        header {
+            padding: 0.8rem 2rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            background: var(--header-bg);
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .container {
+            flex: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .station {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.2rem;
+            border: 1px solid #2a2a2a;
+            transition: transform 0.2s;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .station-header {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .url-input {
+            flex: 1;
+            padding: 0.8rem;
+            background: #2a2a2a;
+            border: 2px solid #3a3a3a;
+            border-radius: 8px;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+            font-weight: 600;
+        }
+
+        .url-input::placeholder {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus {
+            -webkit-text-fill-color: #ffffff !important;
+            -webkit-box-shadow: 0 0 0px 1000px #2a2a2a inset;
+        }
+
         .remove-btn {
-            /* ... existing styles ... */
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--danger);
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
         .remove-btn:active {
-            animation: clickScale 0.3s ease;
-            background-color: #ff4d4d;
+            transform: scale(0.98);
+            opacity: 0.9;
         }
 
-        /* Add matching animation to add button */
+        .add-btn {
+            background: var(--accent);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
         .add-btn:active {
-            animation: clickScale 0.3s ease;
+            transform: scale(0.98);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .video-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: var(--header-bg);
+            padding: 1rem;
+            font-size: 0.9em;
+            border-top: 1px solid #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
+        }
+
+        footer .container {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.4;
         }
     </style>
 </head>
 <body>
-    <!-- ... (keep previous body content) ... -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="var(--accent)">
+                    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                </svg>
+                MultiView Pro
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <button class="add-btn" onclick="createStation()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"/>
+            </svg>
+            Add New Station
+        </button>
+        <div class="grid-container" id="stations"></div>
+    </div>
+
+    <footer>
+        <div class="container">
+            © 2024 MultiView Pro. All rights reserved.
+        </div>
+    </footer>
+
     <script>
-        // Update remove button functionality with animation
-        function removeStation(button) {
-            const station = button.closest('.station');
-            station.style.transform = 'scale(0.95)';
-            station.style.opacity = '0';
-            setTimeout(() => station.remove(), 200);
+        function extractVideoID(url) {
+            const pattern = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+            const match = url.match(pattern);
+            return match ? match[1] : null;
         }
 
-        // Update createStation function
+        function updateStation(station) {
+            const input = station.querySelector('input');
+            const iframe = station.querySelector('iframe');
+            const videoID = extractVideoID(input.value);
+            
+            iframe.src = videoID 
+                ? `https://www.youtube.com/embed/${videoID}?rel=0&modestbranding=1`
+                : '';
+        }
+
         function createStation() {
             const station = document.createElement('div');
             station.className = 'station';
@@ -46,7 +231,7 @@
                 <div class="station-header">
                     <input type="text" class="url-input" placeholder="Paste YouTube URL"
                            oninput="updateStation(this.parentElement.parentElement)">
-                    <button class="remove-btn" onclick="removeStation(this)">
+                    <button class="remove-btn" onclick="this.parentElement.parentElement.remove()">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
                             <path d="M18 6L6 18M6 6l12 12"/>
                         </svg>
@@ -56,8 +241,12 @@
                     <iframe class="video-iframe" allowfullscreen></iframe>
                 </div>
             `;
+
             document.getElementById('stations').appendChild(station);
         }
+
+        // Create initial stations
+        for (let i = 0; i < 4; i++) createStation();
     </script>
 </body>
 </html>
