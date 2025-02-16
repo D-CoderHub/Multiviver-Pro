@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ... (keep previous head content) ... -->
+    <style>
+        /* Add this new animation */
+        @keyframes clickScale {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+
+        /* Updated remove button styles */
+        .remove-btn {
+            /* ... existing styles ... */
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .remove-btn:active {
+            animation: clickScale 0.3s ease;
+            background-color: #ff4d4d;
+        }
+
+        /* Add matching animation to add button */
+        .add-btn:active {
+            animation: clickScale 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- ... (keep previous body content) ... -->
+    <script>
+        // Update remove button functionality with animation
+        function removeStation(button) {
+            const station = button.closest('.station');
+            station.style.transform = 'scale(0.95)';
+            station.style.opacity = '0';
+            setTimeout(() => station.remove(), 200);
+        }
+
+        // Update createStation function
+        function createStation() {
+            const station = document.createElement('div');
+            station.className = 'station';
+            station.innerHTML = `
+                <div class="station-header">
+                    <input type="text" class="url-input" placeholder="Paste YouTube URL"
+                           oninput="updateStation(this.parentElement.parentElement)">
+                    <button class="remove-btn" onclick="removeStation(this)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2">
+                            <path d="M18 6L6 18M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="video-container">
+                    <iframe class="video-iframe" allowfullscreen></iframe>
+                </div>
+            `;
+            document.getElementById('stations').appendChild(station);
+        }
+    </script>
+</body>
+</html>
